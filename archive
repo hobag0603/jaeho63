@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archive</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #ffffff;
+      color: #111111;
+      line-height: 1.5;
+      font-size: 13px;
+      padding: 24px;
+      letter-spacing: -0.01em;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+    .logo {
+      font-weight: 500;
+    }
+    .nav-links a {
+      margin-left: 16px;
+    }
+    .archive-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .archive-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .item-title {
+      font-weight: 500;
+    }
+    .meta-row {
+      color: #666666;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-row span:not(:last-child)::after {
+      content: ",";
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 16px;
+      }
+      .archive-list {
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="logo">
+      <a href="#">archive</a>
+    </div>
+    <nav class="nav-links">
+      <a href="#works">works</a>
+      <a href="#profile">profile</a>
+    </nav>
+  </header>
+
+  <main class="archive-list">
+    <article class="archive-item">
+      <div class="title-row">
+        <a href="#" class="item-title">first archive project</a>
+      </div>
+      <div class="meta-row">
+        <span class="meta-date">2026.10</span>
+        <span class="meta-category">architectural design</span>
+        <span class="meta-detail">seoul, korea</span>
+      </div>
+    </article>
+
+    <article class="archive-item">
+      <div class="title-row">
+        <a href="#" class="item-title">second archive project</a>
+      </div>
+      <div class="meta-row">
+        <span class="meta-date">2025.12</span>
+        <span class="meta-category">exhibition</span>
+        <span class="meta-detail">(update soon)</span>
+      </div>
+    </article>
+  </main>
+
+</body>
+</html>
