@@ -163,6 +163,47 @@ a {
 .project-top-nav a:hover {
   color: #111111;
 }
+/* 가로 화면 밀림 방지 */
+html, body {
+  overflow-x: hidden;
+}
+
+/* 좌측 대표 이미지(52%) + 우측 정보(나머지) 그리드 비율 고정 */
+.project-lead-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 52%) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.project-lead-media,
+.project-body-column {
+  min-width: 0;
+  width: 100%;
+}
+
+/* 이미지가 부모 박스 너비를 넘지 않도록 고정 */
+.project-figure {
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.project-figure.has-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* 우측 프로젝트 제목과 상세 항목(Program) 사이 여백 확보 */
+.side-title {
+  margin: 0 0 24px 0;
+  line-height: 1.35;
+}
+
+.detail-item {
+  margin-bottom: 16px;
+}
 
 /* 좌측 절반 폭 기준 컨테이너 */
 .project-hero-text,
@@ -384,6 +425,10 @@ a {
 
 /* 모바일 대응 */
 @media (max-width: 768px) {
+  .swim-img {
+    width: 100px;
+  }
+
   .header {
     padding: 20px;
   }
@@ -406,8 +451,7 @@ a {
   }
 
   .project-hero-text,
-  .project-body-column,
-  .project-footer {
+  .project-body-column {
     width: 100%;
   }
 

@@ -13,7 +13,7 @@ let rawMouseY = currentY;
 let direction = 1;      // 목표 방향 (1: 오른쪽, -1: 왼쪽)
 let currentScaleX = 1;  // 실제 렌더링 방향 (부드러운 회전용)
 
-const followSpeed = 0.0085; // 최대 추적 속도 (기존 대비 하향)
+const followSpeed = 0.0085; // 최대 추적 속도
 const autoSpeed = 0.007;    // 자율 유영 속도
 const topMargin = 6;
 const edgeMargin = 12;
@@ -24,7 +24,7 @@ let isAutoSwimming = true;
 let autoTimer = 0;
 
 // 반응 지연 및 가속 제어 변수
-let noticeTimer = 0;   // 마우스를 인지하고 돌아보기까지의 대기 프레임
+let noticeTimer = 0;   // 포인터 인지 후 회전 대기 프레임
 let chaseFactor = 0;   // 0에서 1로 서서히 올라가는 출발 가속도
 
 // 페이지 이동 시 직전 상태 복원
@@ -88,7 +88,6 @@ function onPointerMove(x, y) {
   isMouseOutside = false;
   hitWallAfterLeave = false;
 
-  // 자율 유영 중이었다면 인지 대기 시간 부여 후 출발 속도 0부터 시작
   if (isAutoSwimming) {
     isAutoSwimming = false;
     noticeTimer = 18;
@@ -97,6 +96,7 @@ function onPointerMove(x, y) {
 }
 
 if (!isBackgroundMode) {
+  // 데스크톱 마우스 추적
   window.addEventListener('mousemove', (e) => {
     onPointerMove(e.clientX, e.clientY);
   });
@@ -110,11 +110,26 @@ if (!isBackgroundMode) {
     targetY = e.clientY;
   });
 
-  window.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) {
-      onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  });
+  // 모바일 터치(탭) 및 드래그 추적
+  window.addEventListener(
+    'touchstart',
+    (e) => {
+      if (e.touches.length > 0) {
+        onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    },
+    { passive: true }
+  );
+
+  window.addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.touches.length > 0) {
+        onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    },
+    { passive: true }
+  );
 }
 
 function saveSharkState() {
@@ -134,8 +149,9 @@ function saveSharkState() {
 window.addEventListener('pagehide', saveSharkState);
 
 function animate() {
-  const halfW = (shark.offsetWidth / 2) || 100;
-  const halfH = (shark.offsetHeight / 2) || 50;
+  const isMobile = window.innerWidth <= 768;
+  const halfW = (shark.offsetWidth / 2) || (isMobile ? 50 : 100);
+  const halfH = (shark.offsetHeight / 2) || (isMobile ? 25 : 50);
 
   const textBottom = brand ? brand.getBoundingClientRect().bottom : 0;
   const minX = halfW + edgeMargin;
@@ -149,7 +165,6 @@ function animate() {
     }
     autoTimer--;
   } else if (!isMouseOutside) {
-    // 마우스 좌표를 즉시 반영하지 않고 한 박자 늦게 목표점 갱신
     targetX += (rawMouseX - targetX) * 0.04;
     targetY += (rawMouseY - targetY) * 0.04;
   }
@@ -160,19 +175,16 @@ function animate() {
   const dx = clampedX - currentX;
   const dy = clampedY - currentY;
 
-  // 방향 전환 판정
   const desiredDir = dx > 8 ? 1 : (dx < -8 ? -1 : direction);
 
   if (!isAutoSwimming) {
     if (noticeTimer > 0) {
       noticeTimer--;
     } else {
-      // 반대 방향으로 돌아봐야 할 때 속도 초기화 후 몸부터 회전
       if (desiredDir !== direction) {
         direction = desiredDir;
         chaseFactor = 0;
       }
-      // 몸 회전이 거의 끝난 뒤에야 출발 가속도(chaseFactor)가 서서히 증가
       const isTurning = Math.abs(direction - currentScaleX) > 0.25;
       if (!isTurning) {
         chaseFactor = Math.min(1, chaseFactor + 0.012);
@@ -182,7 +194,6 @@ function animate() {
     direction = desiredDir;
   }
 
-  // 물속에서 몸을 부드럽게 뒤집는 회전 보간
   currentScaleX += (direction - currentScaleX) * 0.1;
 
   const activeSpeed = isAutoSwimming ? autoSpeed : (followSpeed * chaseFactor);

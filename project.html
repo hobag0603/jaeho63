@@ -46,8 +46,8 @@
         </aside>
       </div>
 
-      <!-- 본문 섹션들 (좌측 52% 정렬) -->
-      <div class="project-body-column" id="proj-sections"></div>
+      <!-- 본문 블록 영역 (좌측 52% 정렬) -->
+      <div class="project-body-column" id="proj-content"></div>
 
     </article>
   </main>
@@ -72,8 +72,7 @@
     const mainFigure = document.getElementById("main-figure");
     const mainImg = document.getElementById("main-img");
     const mainPlaceholder = mainFigure.querySelector(".thumb-placeholder");
-    mainImg.src = project.mainImage;
-    mainImg.alt = project.title;
+
     mainImg.onload = () => {
       mainPlaceholder.style.display = "none";
       mainFigure.classList.add("has-img");
@@ -81,6 +80,8 @@
     mainImg.onerror = () => {
       mainImg.style.display = "none";
     };
+    mainImg.alt = project.title;
+    mainImg.src = project.mainImage;
     document.getElementById("main-caption").textContent = project.mainCaption || "";
 
     // 우측 상세 항목 생성
@@ -92,23 +93,27 @@
       detailsList.appendChild(row);
     });
 
-    // 좌측 절반 폭 본문 섹션 생성
-    const sectionsContainer = document.getElementById("proj-sections");
-    (project.sections || []).forEach((sec, idx) => {
-      const block = document.createElement("section");
-      block.className = "body-section";
+    // 본문 블록(heading, text, image) 순서대로 생성
+    const contentContainer = document.getElementById("proj-content");
+    let imgCount = 0;
 
-      const h2 = document.createElement("h2");
-      h2.className = "body-sec-title";
-      h2.textContent = sec.heading;
-      block.appendChild(h2);
+    (project.content || []).forEach((block) => {
+      if (block.type === "heading") {
+        const h2 = document.createElement("h2");
+        h2.className = "body-sec-title";
+        h2.style.marginTop = "56px";
+        h2.textContent = block.value;
+        contentContainer.appendChild(h2);
+      } else if (block.type === "text") {
+        const p = document.createElement("p");
+        p.className = "body-sec-text";
+        p.textContent = block.value;
+        contentContainer.appendChild(p);
+      } else if (block.type === "image") {
+        imgCount++;
+        const wrap = document.createElement("div");
+        wrap.style.marginBottom = "32px";
 
-      const p = document.createElement("p");
-      p.className = "body-sec-text";
-      p.textContent = sec.text;
-      block.appendChild(p);
-
-      if (sec.image) {
         const fig = document.createElement("figure");
         fig.className = "project-figure";
 
@@ -117,8 +122,8 @@
         ph.textContent = "준비중";
 
         const img = document.createElement("img");
-        img.src = sec.image;
-        img.alt = `${project.title} - ${idx + 1}`;
+        img.src = block.src;
+        img.alt = `${project.title} - ${imgCount}`;
         img.onload = () => {
           ph.style.display = "none";
           fig.classList.add("has-img");
@@ -129,17 +134,17 @@
 
         fig.appendChild(ph);
         fig.appendChild(img);
-        block.appendChild(fig);
+        wrap.appendChild(fig);
 
-        if (sec.caption) {
+        if (block.caption) {
           const cap = document.createElement("div");
           cap.className = "figure-caption";
-          cap.textContent = sec.caption;
-          block.appendChild(cap);
+          cap.textContent = block.caption;
+          wrap.appendChild(cap);
         }
-      }
 
-      sectionsContainer.appendChild(block);
+        contentContainer.appendChild(wrap);
+      }
     });
   </script>
   <script src="shark.js"></script>
