@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>works — park jaeho</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="brand">park jaeho</a>
+    <nav class="nav">
+      <a href="works.html" class="active">works</a>
+      <a href="about.html">about</a>
+      <a href="contact.html">contact</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <article class="project-detail">
+
+      <div class="project-top-nav">
+        <a href="works.html">← All projects</a>
+      </div>
+
+      <!-- 상단 카테고리 및 한 줄 요약 -->
+      <div class="project-hero-text">
+        <div class="project-category" id="proj-category"></div>
+        <p class="project-subtitle" id="proj-subtitle"></p>
+      </div>
+
+      <!-- 대표 이미지(좌측 52%) + 프로젝트 제목 및 상세 정보(우측) -->
+      <div class="project-lead-grid">
+        <div class="project-lead-media">
+          <figure class="project-figure" id="main-figure">
+            <span class="thumb-placeholder">준비중</span>
+            <img id="main-img" src="" alt="">
+          </figure>
+          <div class="figure-caption" id="main-caption"></div>
+        </div>
+
+        <aside class="project-side-details">
+          <h1 class="side-title" id="proj-title"></h1>
+          <div id="proj-details-list"></div>
+        </aside>
+      </div>
+
+      <!-- 본문 섹션들 (좌측 52% 정렬) -->
+      <div class="project-body-column" id="proj-sections"></div>
+
+    </article>
+  </main>
+
+  <div class="shark-mover bg-shark" id="shark" data-mode="background">
+    <img src="images/shark.png" alt="shark" class="swim-img">
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const projectId = params.get("id");
+    const currentIndex = PROJECTS.findIndex((p) => p.id === projectId);
+    const project = currentIndex !== -1 ? PROJECTS[currentIndex] : PROJECTS[0];
+
+    document.title = `${project.title} — park jaeho`;
+    document.getElementById("proj-category").textContent = project.category;
+    document.getElementById("proj-subtitle").textContent = project.subtitle;
+    document.getElementById("proj-title").textContent = project.title;
+
+    // 대표 이미지 처리
+    const mainFigure = document.getElementById("main-figure");
+    const mainImg = document.getElementById("main-img");
+    const mainPlaceholder = mainFigure.querySelector(".thumb-placeholder");
+    mainImg.src = project.mainImage;
+    mainImg.alt = project.title;
+    mainImg.onload = () => {
+      mainPlaceholder.style.display = "none";
+      mainFigure.classList.add("has-img");
+    };
+    mainImg.onerror = () => {
+      mainImg.style.display = "none";
+    };
+    document.getElementById("main-caption").textContent = project.mainCaption || "";
+
+    // 우측 상세 항목 생성
+    const detailsList = document.getElementById("proj-details-list");
+    (project.details || []).forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "detail-item";
+      row.innerHTML = `<div class="detail-label">${item.label}</div><div class="detail-value">${item.value}</div>`;
+      detailsList.appendChild(row);
+    });
+
+    // 좌측 절반 폭 본문 섹션 생성
+    const sectionsContainer = document.getElementById("proj-sections");
+    (project.sections || []).forEach((sec, idx) => {
+      const block = document.createElement("section");
+      block.className = "body-section";
+
+      const h2 = document.createElement("h2");
+      h2.className = "body-sec-title";
+      h2.textContent = sec.heading;
+      block.appendChild(h2);
+
+      const p = document.createElement("p");
+      p.className = "body-sec-text";
+      p.textContent = sec.text;
+      block.appendChild(p);
+
+      if (sec.image) {
+        const fig = document.createElement("figure");
+        fig.className = "project-figure";
+
+        const ph = document.createElement("span");
+        ph.className = "thumb-placeholder";
+        ph.textContent = "준비중";
+
+        const img = document.createElement("img");
+        img.src = sec.image;
+        img.alt = `${project.title} - ${idx + 1}`;
+        img.onload = () => {
+          ph.style.display = "none";
+          fig.classList.add("has-img");
+        };
+        img.onerror = () => {
+          img.style.display = "none";
+        };
+
+        fig.appendChild(ph);
+        fig.appendChild(img);
+        block.appendChild(fig);
+
+        if (sec.caption) {
+          const cap = document.createElement("div");
+          cap.className = "figure-caption";
+          cap.textContent = sec.caption;
+          block.appendChild(cap);
+        }
+      }
+
+      sectionsContainer.appendChild(block);
+    });
+  </script>
+  <script src="shark.js"></script>
+
+</body>
+</html>
