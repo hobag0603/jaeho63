@@ -8,6 +8,10 @@
   font-weight: 400;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
@@ -71,7 +75,6 @@ a {
   will-change: transform;
 }
 
-/* 물속 부력 및 꼬리 일렁임 */
 @keyframes bodyWave {
   0%, 100% {
     transform: translateY(0px) rotate(-2deg) skewX(0deg);
@@ -95,16 +98,17 @@ a {
   color: #111111;
 }
 
-/* 3열 작업물 그리드 */
+/* 5열 작업물 그리드 */
 .work-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 24px;
-  row-gap: 40px;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 20px;
+  row-gap: 36px;
 }
 
 .work-card {
   display: block;
+  min-width: 0;
 }
 
 .thumb-wrap {
@@ -163,53 +167,12 @@ a {
 .project-top-nav a:hover {
   color: #111111;
 }
-/* 가로 화면 밀림 방지 */
-html, body {
-  overflow-x: hidden;
-}
 
-/* 좌측 대표 이미지(52%) + 우측 정보(나머지) 그리드 비율 고정 */
-.project-lead-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 52%) minmax(0, 1fr);
-  gap: 48px;
-  align-items: start;
-}
-
-.project-lead-media,
-.project-body-column {
-  min-width: 0;
-  width: 100%;
-}
-
-/* 이미지가 부모 박스 너비를 넘지 않도록 고정 */
-.project-figure {
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
-.project-figure.has-img img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* 우측 프로젝트 제목과 상세 항목(Program) 사이 여백 확보 */
-.side-title {
-  margin: 0 0 24px 0;
-  line-height: 1.35;
-}
-
-.detail-item {
-  margin-bottom: 16px;
-}
-
-/* 좌측 절반 폭 기준 컨테이너 */
 .project-hero-text,
 .project-body-column {
   width: 52%;
   max-width: 740px;
+  min-width: 0;
 }
 
 .project-category {
@@ -219,63 +182,33 @@ html, body {
   margin-bottom: 8px;
 }
 
-.project-title {
-  font-size: 24px;
-  font-weight: 500;
-  color: #111111;
-  line-height: 1.3;
-  margin-bottom: 8px;
-}
-
 .project-subtitle {
   color: #555555;
   margin-bottom: 28px;
 }
 
-.project-meta-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding-bottom: 28px;
-  border-bottom: 1px solid #eeeeee;
-  margin-bottom: 32px;
-}
-
-.meta-col {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.meta-label {
-  font-size: 11px;
-  color: #999999;
-}
-
-.meta-val {
-  color: #111111;
-}
-
-/* 대표 이미지(좌측 52%) + 우측 PROJECT DETAILS */
+/* 대표 이미지(좌측 52%) + 우측 상세 정보 */
 .project-lead-grid {
   display: grid;
-  grid-template-columns: 52% 1fr;
+  grid-template-columns: minmax(0, 52%) minmax(0, 1fr);
   gap: 48px;
   align-items: start;
   margin-bottom: 64px;
+}
+
+.project-lead-media {
+  min-width: 0;
+  width: 100%;
 }
 
 .project-side-details {
   padding-top: 4px;
 }
 
-.side-heading {
-  font-size: 14px;
-  font-weight: 500;
+.side-title {
+  margin: 0 0 24px 0;
+  line-height: 1.35;
   color: #111111;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eeeeee;
-  margin-bottom: 20px;
 }
 
 .detail-item {
@@ -296,6 +229,7 @@ html, body {
 .project-figure {
   position: relative;
   width: 100%;
+  margin: 0;
   aspect-ratio: 16 / 10;
   background-color: #f2f2f2;
   border-radius: 4px;
@@ -323,11 +257,7 @@ html, body {
   margin-top: 8px;
 }
 
-/* 본문 넘버링 섹션 (01, 02...) */
-.body-section {
-  margin-bottom: 64px;
-}
-
+/* 본문 넘버링 섹션 */
 .body-sec-title {
   font-size: 15px;
   font-weight: 500;
@@ -341,23 +271,6 @@ html, body {
   color: #333333;
   line-height: 1.75;
   margin-bottom: 28px;
-}
-
-.project-footer {
-  width: 52%;
-  max-width: 740px;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 80px;
-  padding-top: 24px;
-  border-top: 1px solid #eeeeee;
-  color: #888888;
-}
-
-.project-footer a:hover {
-  color: #111111;
-  text-decoration: underline;
-  text-underline-offset: 4px;
 }
 
 /* About 페이지 */
