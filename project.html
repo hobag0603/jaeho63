@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>works — park jaeho</title>
+  <title>Project — Park Jaeho</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-
   <header class="header">
     <a href="index.html" class="brand">park jaeho</a>
     <nav class="nav">
@@ -18,38 +18,30 @@
   </header>
 
   <main class="container">
-    <article class="project-detail">
-
+    <div class="project-detail">
       <div class="project-top-nav">
         <a href="works.html">← All projects</a>
       </div>
 
-      <!-- 상단 카테고리 및 한 줄 요약 -->
-      <div class="project-hero-text">
-        <div class="project-category" id="proj-category"></div>
-        <p class="project-subtitle" id="proj-subtitle"></p>
-      </div>
+      <div class="project-category" id="p-category"></div>
 
-      <!-- 대표 이미지(좌측 52%) + 프로젝트 제목 및 상세 정보(우측) -->
       <div class="project-lead-grid">
         <div class="project-lead-media">
-          <figure class="project-figure" id="main-figure">
-            <span class="thumb-placeholder">준비중</span>
-            <img id="main-img" src="" alt="">
+          <figure class="project-figure has-img">
+            <img id="p-main-img" src="" alt="">
           </figure>
-          <div class="figure-caption" id="main-caption"></div>
         </div>
 
-        <aside class="project-side-details">
-          <h1 class="side-title" id="proj-title"></h1>
-          <div id="proj-details-list"></div>
-        </aside>
+        <div class="project-side-details">
+          <h1 class="side-title" id="p-title"></h1>
+          <div id="p-details"></div>
+        </div>
       </div>
 
-      <!-- 본문 블록 영역 (좌측 52% 정렬) -->
-      <div class="project-body-column" id="proj-content"></div>
-
-    </article>
+      <div class="project-body-column">
+        <div class="md-content" id="p-md-body"></div>
+      </div>
+    </div>
   </main>
 
   <div class="shark-mover bg-shark" id="shark" data-mode="background">
@@ -59,95 +51,41 @@
   <script src="data.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
-    const projectId = params.get("id");
-    const currentIndex = PROJECTS.findIndex((p) => p.id === projectId);
-    const project = currentIndex !== -1 ? PROJECTS[currentIndex] : PROJECTS[0];
+    const id = params.get("id");
+    const project = PROJECTS.find(p => p.id === id) || PROJECTS[0];
 
-    document.title = `${project.title} — park jaeho`;
-    document.getElementById("proj-category").textContent = project.category;
-    document.getElementById("proj-subtitle").textContent = project.subtitle;
-    document.getElementById("proj-title").textContent = project.title;
+    if (project) {
+      document.title = `${project.title} — Park Jaeho`;
+      document.getElementById("p-category").textContent = project.category || "";
+      document.getElementById("p-title").textContent = project.title || "";
 
-    // 대표 이미지 처리
-    const mainFigure = document.getElementById("main-figure");
-    const mainImg = document.getElementById("main-img");
-    const mainPlaceholder = mainFigure.querySelector(".thumb-placeholder");
+      const mainImg = document.getElementById("p-main-img");
+      mainImg.src = encodeURI(project.mainImage);
+      mainImg.alt = project.title;
 
-    mainImg.onload = () => {
-      mainPlaceholder.style.display = "none";
-      mainFigure.classList.add("has-img");
-    };
-    mainImg.onerror = () => {
-      mainImg.style.display = "none";
-    };
-    mainImg.alt = project.title;
-    mainImg.src = project.mainImage;
-    document.getElementById("main-caption").textContent = project.mainCaption || "";
+      const detailsEl = document.getElementById("p-details");
+      detailsEl.innerHTML = (project.details || []).map(d => `
+        <div class="detail-item">
+          <div class="detail-label">${d.label}</div>
+          <div class="detail-value">${d.value}</div>
+        </div>
+      `).join("");
 
-    // 우측 상세 항목 생성
-    const detailsList = document.getElementById("proj-details-list");
-    (project.details || []).forEach((item) => {
-      const row = document.createElement("div");
-      row.className = "detail-item";
-      row.innerHTML = `<div class="detail-label">${item.label}</div><div class="detail-value">${item.value}</div>`;
-      detailsList.appendChild(row);
-    });
-
-    // 본문 블록(heading, text, image) 순서대로 생성
-    const contentContainer = document.getElementById("proj-content");
-    let imgCount = 0;
-
-    (project.content || []).forEach((block) => {
-      if (block.type === "heading") {
-        const h2 = document.createElement("h2");
-        h2.className = "body-sec-title";
-        h2.style.marginTop = "56px";
-        h2.textContent = block.value;
-        contentContainer.appendChild(h2);
-      } else if (block.type === "text") {
-        const p = document.createElement("p");
-        p.className = "body-sec-text";
-        p.textContent = block.value;
-        contentContainer.appendChild(p);
-      } else if (block.type === "image") {
-        imgCount++;
-        const wrap = document.createElement("div");
-        wrap.style.marginBottom = "32px";
-
-        const fig = document.createElement("figure");
-        fig.className = "project-figure";
-
-        const ph = document.createElement("span");
-        ph.className = "thumb-placeholder";
-        ph.textContent = "준비중";
-
-        const img = document.createElement("img");
-        img.src = block.src;
-        img.alt = `${project.title} - ${imgCount}`;
-        img.onload = () => {
-          ph.style.display = "none";
-          fig.classList.add("has-img");
-        };
-        img.onerror = () => {
-          img.style.display = "none";
-        };
-
-        fig.appendChild(ph);
-        fig.appendChild(img);
-        wrap.appendChild(fig);
-
-        if (block.caption) {
-          const cap = document.createElement("div");
-          cap.className = "figure-caption";
-          cap.textContent = block.caption;
-          wrap.appendChild(cap);
-        }
-
-        contentContainer.appendChild(wrap);
+      if (project.mdFile) {
+        fetch(encodeURI(project.mdFile))
+          .then(res => res.ok ? res.text() : "")
+          .then(text => {
+            if (!text) return;
+            const safeMd = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, url) => {
+              const cleanUrl = url.trim().replace(/^(\.\.\/)+|^\/+/, "");
+              return `![${alt}](${encodeURI(cleanUrl)})`;
+            });
+            document.getElementById("p-md-body").innerHTML = marked.parse(safeMd);
+          })
+          .catch(() => {});
       }
-    });
+    }
   </script>
   <script src="shark.js"></script>
-
 </body>
 </html>

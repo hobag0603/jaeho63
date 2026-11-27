@@ -17,115 +17,47 @@
     </nav>
   </header>
 
-  <main class="container">
-
-    <!-- 단락 1: 학교 프로젝트 -->
-    <section class="work-section">
-      <h2 class="section-title">Academic Studio</h2>
-
-      <div class="work-grid">
-        <a href="project.html?id=studio-01" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/Academic Studio/5-1/thumb.jpg" alt="5-1 Studio" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Gyeongju Bomun Arts Complex</div>
-            <div class="work-sub">5-1 Studio / Architectural Design</div>
-          </div>
-        </a>
-
-        <a href="project.html?id=studio-02" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/Academic Studio/4-2/thumb.jpg" alt="4-2 Studio" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Studio Project 02</div>
-            <div class="work-sub">4-2 Studio / Renovation &amp; Extension</div>
-          </div>
-        </a>
-
-        <a href="project.html?id=studio-03" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/Academic Studio/3-2/thumb.jpg" alt="3-2 Studio" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Studio Project 03</div>
-            <div class="work-sub">3-2 Studio / Urban Masterplan</div>
-          </div>
-        </a>
-
-        <a href="project.html?id=studio-04" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/Academic Studio/2-2/thumb.jpg" alt="2-2 Studio" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Studio Project 04</div>
-            <div class="work-sub">2-2 Studio / Architectural Design</div>
-          </div>
-        </a>
-
-        <a href="project.html?id=studio-05" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/Academic Studio/1-2/thumb.jpg" alt="1-2 Studio" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Studio Project 05</div>
-            <div class="work-sub">1-2 Studio / Architectural Design</div>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <!-- 단락 2: 아카이브 -->
-    <section class="work-section">
-      <h2 class="section-title">Archive</h2>
-
-      <div class="work-grid">
-        <a href="project.html?id=archive-01" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/archive-01/thumb.jpg" alt="Archive 01" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Archive 01</div>
-            <div class="work-sub">Modern Architecture Archiving</div>
-          </div>
-        </a>
-
-        <a href="project.html?id=archive-02" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/archive-02/thumb.jpg" alt="Archive 02" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Archive 02</div>
-            <div class="work-sub">Woodworking / Furniture</div>
-          </div>
-        </a>
-
-        <a href="project.html?id=archive-03" class="work-card">
-          <div class="thumb-wrap">
-            <span class="thumb-placeholder">준비중</span>
-            <img src="images/archive-03/thumb.jpg" alt="Archive 03" onerror="this.style.display='none'">
-          </div>
-          <div class="work-info">
-            <div class="work-title">Archive 03</div>
-            <div class="work-sub">Bookshop / Spatial Direction</div>
-          </div>
-        </a>
-      </div>
-    </section>
-
-  </main>
+  <main class="container" id="works-container"></main>
 
   <div class="shark-mover bg-shark" id="shark" data-mode="background">
     <img src="images/shark.png" alt="shark" class="swim-img">
   </div>
+
+  <script src="data.js"></script>
+  <script>
+    const container = document.getElementById("works-container");
+
+    const sections = [
+      { title: "Academic", filter: p => p.id.startsWith("studio-") },
+      { title: "Archive", filter: p => p.id.startsWith("archive-") },
+      { title: "Competition", filter: p => p.id.startsWith("comp-") }
+    ];
+
+    container.innerHTML = sections.map(sec => {
+      const items = PROJECTS.filter(sec.filter);
+      if (items.length === 0) return "";
+
+      const cards = items.map(p => `
+        <a href="project.html?id=${p.id}" class="work-card">
+          <div class="thumb-wrap">
+            <span class="thumb-placeholder">준비중</span>
+            <img src="${encodeURI(p.mainImage)}" alt="${p.title}" onerror="this.style.display='none'">
+          </div>
+          <div class="work-info">
+            <div class="work-title">${p.title}</div>
+            <div class="work-sub">${p.subtitle || p.category}</div>
+          </div>
+        </a>
+      `).join("");
+
+      return `
+        <section class="work-section">
+          <h2 class="section-title">${sec.title}</h2>
+          <div class="work-grid">${cards}</div>
+        </section>
+      `;
+    }).join("");
+  </script>
   <script src="shark.js"></script>
 
 </body>
